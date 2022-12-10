@@ -4,7 +4,8 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "ParallelPrefixSum.GPU"
+        "ParallelPrefixSum.GPU",
+        "ParallelPrefixSum.CPU"
     ],
     "includePlatforms": [
         "Editor"
