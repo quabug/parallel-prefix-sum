@@ -24,6 +24,6 @@ jobs:
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
-          customParameters: -scriptingBackend ${{ matrix.backend }} -testCategory "!benchmark"
+          customParameters: -scriptingBackend ${{ matrix.backend }} -testCategory "!benchmark;!gpu"
           projectPath: .
           githubToken: ${{ secrets.GITHUB_TOKEN }}
