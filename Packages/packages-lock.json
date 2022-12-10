@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "com.domain.package": {
-      "version": "file:com.domain.package",
+    "com.quabug.parallel-prefix-sum.gpu": {
+      "version": "file:com.quabug.parallel-prefix-sum.gpu",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}

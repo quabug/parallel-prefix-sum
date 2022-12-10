@@ -1,0 +1,14 @@
+StructuredBuffer<int> Numbers;
+RWStructuredBuffer<int> Sums;
+int Count;
+
+#pragma kernel PrefixSum
+[numthreads(1,1,1)]
+void PrefixSum()
+{
+    Sums[0] = Numbers[0];
+    for (int i = 1; i < Count; i++)
+    {
+        Sums[i] = Sums[i-1] + Numbers[i];
+    }
+}
