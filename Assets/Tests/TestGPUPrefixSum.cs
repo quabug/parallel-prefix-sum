@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Random = System.Random;
 
+[Category("gpu")]
 public class TestGPUPrefixSum
 {
     [Test]
