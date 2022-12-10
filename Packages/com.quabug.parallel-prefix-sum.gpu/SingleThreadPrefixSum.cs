@@ -2,36 +2,39 @@ using System;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
-[Serializable]
-public sealed class SingleThreadPrefixSum : IPrefixSum
+namespace Parallel.GPU
 {
-    private readonly ComputeShader _shader;
-    private readonly int _kernelIndex;
-
-    public ComputeBuffer Numbers { get; }
-    public ComputeBuffer Sums { get; }
-
-    public SingleThreadPrefixSum(ComputeShader shader, int count)
+    [Serializable]
+    public sealed class SingleThreadPrefixSum : IPrefixSum
     {
-        _shader = shader;
-        _kernelIndex = shader.FindKernel("PrefixSum");
+        private readonly ComputeShader _shader;
+        private readonly int _kernelIndex;
 
-        Sums = new ComputeBuffer(count, UnsafeUtility.SizeOf<int>(), ComputeBufferType.Structured);
-        Numbers = new ComputeBuffer(count, UnsafeUtility.SizeOf<int>(), ComputeBufferType.Structured);
+        public ComputeBuffer Numbers { get; }
+        public ComputeBuffer Sums { get; }
 
-        _shader.SetInt("Count", count);
-        _shader.SetBuffer(_kernelIndex, "Numbers", Numbers);
-        _shader.SetBuffer(_kernelIndex, "Sums", Sums);
-    }
+        public SingleThreadPrefixSum(ComputeShader shader, int count)
+        {
+            _shader = shader;
+            _kernelIndex = shader.FindKernel("PrefixSum");
 
-    public void Dispatch()
-    {
-        _shader.Dispatch(_kernelIndex, 1, 1, 1);
-    }
+            Sums = new ComputeBuffer(count, UnsafeUtility.SizeOf<int>(), ComputeBufferType.Structured);
+            Numbers = new ComputeBuffer(count, UnsafeUtility.SizeOf<int>(), ComputeBufferType.Structured);
 
-    public void Dispose()
-    {
-        Numbers?.Dispose();
-        Sums?.Dispose();
+            _shader.SetInt("Count", count);
+            _shader.SetBuffer(_kernelIndex, "Numbers", Numbers);
+            _shader.SetBuffer(_kernelIndex, "Sums", Sums);
+        }
+
+        public void Dispatch()
+        {
+            _shader.Dispatch(_kernelIndex, 1, 1, 1);
+        }
+
+        public void Dispose()
+        {
+            Numbers?.Dispose();
+            Sums?.Dispose();
+        }
     }
 }
