@@ -3,7 +3,6 @@ using NUnit.Framework;
 using Parallel.GPU;
 using UnityEditor;
 using UnityEngine;
-using Random = System.Random;
 
 [Category("gpu")]
 public class TestGPUPrefixSum

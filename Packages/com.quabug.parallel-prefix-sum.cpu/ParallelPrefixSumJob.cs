@@ -1,7 +1,6 @@
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
-using UnityEngine;
 
 namespace Parallel.CPU
 {
@@ -12,7 +11,7 @@ namespace Parallel.CPU
         public int BatchCount { get; set; } = 32;
 
         [BurstCompile]
-        public struct PrefixSumStepJob : IJobParallelFor
+        public struct ScanJob : IJobParallelFor
         {
             public int Offset;
             [ReadOnly] public NativeArray<TValue> Values;
@@ -20,8 +19,8 @@ namespace Parallel.CPU
 
             public void Execute(int index)
             {
-                Debug.Assert(Values.Length > 0);
-                Debug.Assert(Values.Length == PrefixSums.Length);
+                UnityEngine.Debug.Assert(Values.Length > 0);
+                UnityEngine.Debug.Assert(Values.Length == PrefixSums.Length);
                 if (index < Offset) PrefixSums[index] = Values[index];
                 else PrefixSums[index] = default(TNumber).Add(Values[index], Values[index - Offset]);
             }
@@ -47,7 +46,7 @@ namespace Parallel.CPU
             for (var offset = 1; offset < input.Length; offset <<= 1)
             {
                 (input, output) = (output, input);
-                var handle = new PrefixSumStepJob { Offset = offset, Values = input, PrefixSums = output }
+                var handle = new ScanJob { Offset = offset, Values = input, PrefixSums = output }
                     .Schedule(input.Length, BatchCount, dependsOn);
                 dependsOn = JobHandle.CombineDependencies(dependsOn, handle);
             }
