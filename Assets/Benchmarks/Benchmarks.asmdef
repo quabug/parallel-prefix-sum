@@ -1,15 +1,14 @@
 {
-    "name": "Tests",
+    "name": "Benchmarks",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "ParallelPrefixSum.GPU",
-        "ParallelPrefixSum.CPU"
+        "Unity.PerformanceTesting",
+        "ParallelPrefixSum.CPU",
+        "ParallelPrefixSum.GPU"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,

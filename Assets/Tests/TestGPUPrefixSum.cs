@@ -12,7 +12,7 @@ public class TestGPUPrefixSum
     public void should_calc_prefix_sum_in_single_thread([Random(0, 1000, 100)] int seed)
     {
         var prefix = AssetDatabase.LoadAssetAtPath<ComputeShader>("Packages/com.quabug.parallel-prefix-sum.gpu/SingleThreadPrefixSum.compute");
-        var (numbers, sums) = RandomNumbers(seed);
+        var (numbers, sums) = TestUtilities.RandomNumbers(seed);
         using var prefixSum = new SingleThreadPrefixSum(prefix, numbers.Length);
         prefixSum.Numbers.SetData(numbers);
         prefixSum.Dispatch();
@@ -48,25 +48,12 @@ public class TestGPUPrefixSum
     public void should_calc_prefix_sum_in_parallel([Random(0, 1000, 100)] int seed)
     {
         var prefix = AssetDatabase.LoadAssetAtPath<ComputeShader>("Packages/com.quabug.parallel-prefix-sum.gpu/ParallelPrefixSum.compute");
-        var (numbers, sums) = RandomNumbers(seed);
+        var (numbers, sums) = TestUtilities.RandomNumbers(seed);
         using var prefixSum = new ParallelPrefixSum(prefix, numbers.Length);
         prefixSum.Numbers.SetData(numbers);
         prefixSum.Dispatch();
         var gpuSums = new int[sums.Length];
         prefixSum.Sums.GetData(gpuSums);
         Assert.That(sums, Is.EquivalentTo(gpuSums));
-    }
-
-    (int[] numbers, int[] sums) RandomNumbers(int seed)
-    {
-        var random = new Random(seed);
-        var count = random.Next(1, 1000);
-        Debug.Log($"count = {count}");
-        var numbers = new int[count];
-        for (var i = 0; i < count; i++) numbers[i] = random.Next(3);
-        var sums = new int[numbers.Length];
-        sums[0] = numbers[0];
-        for (var i = 1; i < sums.Length; i++) sums[i] = sums[i - 1] + numbers[i];
-        return (numbers, sums);
     }
 }
