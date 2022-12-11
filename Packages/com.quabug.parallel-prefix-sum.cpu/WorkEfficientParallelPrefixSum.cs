@@ -20,7 +20,7 @@ namespace Parallel.CPU
             {
                 var valueIndex = Values.Length - index * AddOffset * 2 - 1;
                 var addIndex = valueIndex - AddOffset;
-                if (addIndex >= 0) {Values[valueIndex] = default(TNumber).Add(Values[valueIndex], Values[addIndex]);}
+                Values[valueIndex] = default(TNumber).Add(Values[valueIndex], Values[addIndex]);
             }
         }
 
@@ -44,12 +44,9 @@ namespace Parallel.CPU
             {
                 var valueIndex = Values.Length - index * AddOffset * 2 - 1;
                 var addIndex = valueIndex - AddOffset;
-                if (addIndex >= 0)
-                {
-                    var value = Values[valueIndex];
-                    Values[valueIndex] = default(TNumber).Add(value, Values[addIndex]);
-                    Values[addIndex] = value;
-                }
+                var value = Values[valueIndex];
+                Values[valueIndex] = default(TNumber).Add(value, Values[addIndex]);
+                Values[addIndex] = value;
             }
         }
 
@@ -68,7 +65,7 @@ namespace Parallel.CPU
             var offset = 1;
             for (; offset < values.Length; offset <<= 1)
             {
-                var count = (values.Length + offset * 2 - 1) / (offset * 2);
+                var count = (values.Length + offset - 1) / (offset * 2);
                 var handle = new UpSweepScanJob { AddOffset = offset, Values = values }.Schedule(count, BatchCount, dependsOn);
                 dependsOn = JobHandle.CombineDependencies(handle, dependsOn);
             }
@@ -79,7 +76,7 @@ namespace Parallel.CPU
         {
             while (offset > 0)
             {
-                var count = (values.Length + offset * 2 - 1) / (offset * 2);
+                var count = (values.Length + offset - 1) / (offset * 2);
                 var handle = new DownSweepScanJob { AddOffset = offset, Values = values }.Schedule(count, BatchCount, dependsOn);
                 dependsOn = JobHandle.CombineDependencies(handle, dependsOn);
                 offset >>= 1;
