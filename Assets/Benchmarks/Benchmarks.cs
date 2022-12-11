@@ -12,6 +12,11 @@ public class Benchmarks
 {
     struct IntNumber : INumber<int>
     {
+        public int Zero()
+        {
+            return 0;
+        }
+
         public int Add(int lhs, int rhs)
         {
             return lhs + rhs;
@@ -67,6 +72,22 @@ public class Benchmarks
             var sums = new NativeArray<int>(count, Allocator.TempJob);
             Measure.Method(() => parallelPrefixSum.CalculatePrefixSum(values, sums).Complete())
                 .SampleGroup("parallel")
+                .SetUp(() =>
+                {
+                    for (var i = 0; i < values.Length; i++) values[i] = 1;
+                })
+                .Run()
+            ;
+            values.Dispose();
+            sums.Dispose();
+        }
+
+        {
+            var parallelPrefixSum = new WorkEfficientParallelPrefixSum<IntNumber, int>();
+            var values = new NativeArray<int>(count, Allocator.TempJob);
+            var sums = new NativeArray<int>(count, Allocator.TempJob);
+            Measure.Method(() => parallelPrefixSum.CalculatePrefixSum(values, sums).Complete())
+                .SampleGroup("work-efficient-parallel")
                 .SetUp(() =>
                 {
                     for (var i = 0; i < values.Length; i++) values[i] = 1;
