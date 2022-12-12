@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Create Release for OpenUPM
-      id: create_release
+    - name: Create GPU Release for OpenUPM
+      id: create_release_gpu
       uses: quabug/create-upm-release@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -22,3 +22,14 @@ jobs:
         upm_package_path: Packages/com.quabug.parallel-prefix-sum.gpu
         create_unitypackage: true
         unitypackage_name: parallel-prefix-sum.gpu
+    - name: Create CPU Release for OpenUPM
+      id: create_release_cpu
+      uses: quabug/create-upm-release@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        target: main
+        upm_tag_prefix: cpu/v
+        upm_package_path: Packages/com.quabug.parallel-prefix-sum.cpu
+        create_unitypackage: true
+        unitypackage_name: parallel-prefix-sum.cpu
