@@ -25,12 +25,14 @@ public class Benchmarks
 
     private static int[] _counts =
     {
-        100, 1_000, 10_000, 100_000, 1_000_000, 10_000_000
+        100, 1_000, 10_000, 100_000, 1_000_000, 10_000_000//, 100_000_000, 1_000_000_000
     };
 
     [Test, TestCaseSource(nameof(_counts)), Performance]
     public void CPU(int count)
     {
+        if (count > 10_000_000) return;
+
         {
             var values = new NativeArray<int>(count, Allocator.TempJob);
             var sums = new NativeArray<int>(count, Allocator.TempJob);
@@ -123,6 +125,7 @@ public class Benchmarks
 
         var sums = new int[count];
         var numbers = Enumerable.Repeat(1, count).ToArray();
+        if (count < 10_000_000)
         {
             var shader = AssetDatabase.LoadAssetAtPath<ComputeShader>("Packages/com.quabug.parallel-prefix-sum.gpu/SingleThreadPrefixSum.compute");
             var prefixSum = new SingleThreadPrefixSum(shader, count);
@@ -149,6 +152,23 @@ public class Benchmarks
                     parallelPrefixSum.Sums.GetData(sums);
                 })
                 .SampleGroup("parallel")
+                .SetUp(() =>
+                {
+                    parallelPrefixSum.Numbers.SetData(numbers);
+                })
+                .Run()
+            ;
+        }
+
+        {
+            var shader = AssetDatabase.LoadAssetAtPath<ComputeShader>("Packages/com.quabug.parallel-prefix-sum.gpu/WorkEfficientParallelPrefixSum.compute");
+            var parallelPrefixSum = new ParallelPrefixSum(shader, count, groupSum);
+            Measure.Method(() =>
+                {
+                    parallelPrefixSum.Dispatch();
+                    parallelPrefixSum.Sums.GetData(sums);
+                })
+                .SampleGroup("work-efficient-parallel")
                 .SetUp(() =>
                 {
                     parallelPrefixSum.Numbers.SetData(numbers);

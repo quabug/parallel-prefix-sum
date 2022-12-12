@@ -49,7 +49,7 @@ namespace Parallel.GPU
                 var sumBuffer = DispatchStep(i, groupSumBuffer.count);
                 _groupSum.DispatchCollectGroupSum(sums: sumBuffer, groupSums: groupSumBuffer);
             }
-            // DispatchStep(_inputNumbersBuffer.Count - 1, 1);
+            DispatchStep(_inputNumbersBuffer.Count - 1, 1);
 
             for (var i = _inputNumbersBuffer.Count - 2; i >= 0; i--)
             {
