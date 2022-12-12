@@ -1,6 +1,6 @@
 {
   "name": "com.quabug.parallel-prefix-sum.cpu",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "displayName": "CPU Parallel Prefix Sum",
   "description": "CPU Parallel Prefix Sum (DOTS)",
   "type": "library",

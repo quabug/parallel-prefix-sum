@@ -1,11 +1,10 @@
-﻿#define THREAD_SIZE 256
+﻿#include "ThreadSize.compute"
 
 StructuredBuffer<int> Numbers;
 RWStructuredBuffer<int> Sums;
-RWStructuredBuffer<int> GroupSums;
 uint Count;
 
-groupshared int _sumBuffer[THREAD_SIZE * 2]; // double buffer
+groupshared int _buffer[THREAD_SIZE * 2]; // double buffer
 
 #pragma kernel PrefixSum
 [numthreads(THREAD_SIZE,1,1)]
@@ -14,13 +13,14 @@ void PrefixSum(uint3 dispatchThreadId : SV_DispatchThreadID, uint3 groupThreadId
     const uint localId = groupThreadId.x;
     const uint id = dispatchThreadId.x;
 
-    uint inBegin = THREAD_SIZE;
+    const uint count = min(THREAD_SIZE, Count - groupId * THREAD_SIZE);
+    uint inBegin = count;
     uint outBegin = 0;
-    _sumBuffer[localId] = Numbers[id];
+    _buffer[localId] = Numbers[id];
     GroupMemoryBarrierWithGroupSync();
     
     [unroll]
-    for (uint offset = 1; offset < THREAD_SIZE; offset <<= 1)
+    for (uint offset = 1; offset < count; offset <<= 1)
     {
         // swap
         const uint temp = inBegin;
@@ -29,21 +29,10 @@ void PrefixSum(uint3 dispatchThreadId : SV_DispatchThreadID, uint3 groupThreadId
     
         uint inIndex = inBegin + localId;
         uint outIndex = outBegin + localId;
-        if (localId < offset) _sumBuffer[outIndex] = _sumBuffer[inIndex];
-        else _sumBuffer[outIndex] = _sumBuffer[inIndex] + _sumBuffer[inIndex - offset];
+        if (localId < offset) _buffer[outIndex] = _buffer[inIndex];
+        else _buffer[outIndex] = _buffer[inIndex] + _buffer[inIndex - offset];
         GroupMemoryBarrierWithGroupSync();
     }
     
-    if (id >= Count) return;
-    const int sum = _sumBuffer[outBegin + localId];
-    if (localId == THREAD_SIZE - 1) GroupSums[groupId] = sum;
-    Sums[id] = sum;
-}
-
-#pragma kernel AddGroupSum
-[numthreads(THREAD_SIZE,1,1)]
-void AddGroupSum(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupID)
-{
-    if (id.x >= Count || groupId == 0) return;
-    Sums[id.x] += GroupSums[groupId-1];
+    if (id < Count) Sums[id] = _buffer[outBegin + localId];
 }

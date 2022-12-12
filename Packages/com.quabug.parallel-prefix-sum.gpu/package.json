@@ -1,6 +1,6 @@
 {
   "name": "com.quabug.parallel-prefix-sum.gpu",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "displayName": "GPU Parallel Prefix Sum",
   "description": "GPU Parallel Prefix Sum (Compute Shader)",
   "type": "library"
