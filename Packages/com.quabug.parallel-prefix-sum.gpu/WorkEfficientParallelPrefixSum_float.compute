@@ -1,10 +1,10 @@
-﻿#include "ThreadSize.compute"
+#include "ThreadSize.compute"
 
-StructuredBuffer<int> Numbers;
-RWStructuredBuffer<int> Sums;
+StructuredBuffer<float> Numbers;
+RWStructuredBuffer<float> Sums;
 uint Count;
 
-groupshared int _buffer[THREAD_SIZE];
+groupshared float _buffer[THREAD_SIZE];
 
 #pragma kernel PrefixSum
 [numthreads(THREAD_SIZE,1,1)]
@@ -37,7 +37,7 @@ void PrefixSum(uint3 dispatchThreadId : SV_DispatchThreadID, uint3 groupThreadId
     {
         if (localId >= offset && localId < count && index % (offset * 2) == 0)
         {
-            const int value = _buffer[localId];
+            const float value = _buffer[localId];
             _buffer[localId] += _buffer[localId - offset];
             _buffer[localId - offset] = value;
         }

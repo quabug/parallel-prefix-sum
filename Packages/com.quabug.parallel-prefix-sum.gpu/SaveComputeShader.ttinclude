@@ -1,0 +1,14 @@
+<#@ import namespace="System.IO" #>
+<#@ template hostspecific="true" #>
+<#@ assembly name="System.Core" #>
+<#@ output extension=".compute" #>
+<#+
+    private void SaveComputeShader(string type) {
+        string templateDirectory = Path.GetDirectoryName(Host.TemplateFile);
+        string templateFileName = Path.GetFileNameWithoutExtension(Host.TemplateFile);
+        string templateFileExt = "compute";
+        string outputFilePath = Path.Combine(templateDirectory, $"{templateFileName}_{type}.{templateFileExt}");
+        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
+        this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
+    }
+#>

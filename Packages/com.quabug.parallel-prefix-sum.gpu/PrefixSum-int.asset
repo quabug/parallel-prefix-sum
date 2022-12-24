@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 284837744df3424a956d0ee557c60e57, type: 3}
+  m_Name: PrefixSum-int
+  m_EditorClassIdentifier: 
+  _count: 512
+  _stride: 4
+  _groupSumShader: {fileID: 7200000, guid: a9499f9a843014afc94f9a189ce72835, type: 3}
+  _prefixSumShader: {fileID: 7200000, guid: 713bdc6120eaa475c957ea007cc87eeb, type: 3}
