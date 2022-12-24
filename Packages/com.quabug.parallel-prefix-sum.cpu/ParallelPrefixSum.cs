@@ -40,7 +40,7 @@ namespace Parallel.CPU
             }
             if (output != outputPrefixSum)
             {
-                var copyHandle = new CopyJob<TValue> { Source = output, Destination = outputPrefixSum }
+                var copyHandle = new ParallelCopyJob<TValue> { Source = output, Destination = outputPrefixSum }
                     .Schedule(output.Length, BatchCount, dependsOn);
                 dependsOn = JobHandle.CombineDependencies(dependsOn, copyHandle);
             }

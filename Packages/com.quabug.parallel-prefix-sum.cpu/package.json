@@ -1,8 +1,8 @@
 {
   "name": "com.quabug.parallel-prefix-sum.cpu",
-  "version": "1.0.0",
-  "displayName": "CPU Parallel Prefix Sum",
-  "description": "CPU Parallel Prefix Sum (DOTS)",
+  "version": "1.0.1",
+  "displayName": "Parallel Prefix Sum (DOTS)",
+  "description": "Parallel Prefix Sum (DOTS)",
   "type": "library",
   "dependencies": {
     "com.unity.burst": "1.8.2"
