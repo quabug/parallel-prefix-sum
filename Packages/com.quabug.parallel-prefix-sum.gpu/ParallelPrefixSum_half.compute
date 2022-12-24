@@ -1,0 +1,38 @@
+#include "ThreadSize.compute"
+
+StructuredBuffer<half> Numbers;
+RWStructuredBuffer<half> Sums;
+uint Count;
+
+groupshared half _buffer[THREAD_SIZE * 2]; // double buffer
+
+#pragma kernel PrefixSum
+[numthreads(THREAD_SIZE,1,1)]
+void PrefixSum(uint3 dispatchThreadId : SV_DispatchThreadID, uint3 groupThreadId : SV_GroupThreadID, uint groupId : SV_GroupID)
+{
+    const uint localId = groupThreadId.x;
+    const uint id = dispatchThreadId.x;
+
+    const uint count = min(THREAD_SIZE, Count - groupId * THREAD_SIZE);
+    uint inBegin = count;
+    uint outBegin = 0;
+    _buffer[localId] = Numbers[id];
+    GroupMemoryBarrierWithGroupSync();
+
+    [unroll]
+    for (uint offset = 1; offset < count; offset <<= 1)
+    {
+        // swap
+        const uint temp = inBegin;
+        inBegin = outBegin;
+        outBegin = temp;
+    
+        uint inIndex = inBegin + localId;
+        uint outIndex = outBegin + localId;
+        if (localId < offset) _buffer[outIndex] = _buffer[inIndex];
+        else _buffer[outIndex] = _buffer[inIndex] + _buffer[inIndex - offset];
+        GroupMemoryBarrierWithGroupSync();
+    }
+
+    if (id < Count) Sums[id] = _buffer[outBegin + localId];
+}

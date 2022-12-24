@@ -1,29 +1,28 @@
 using System;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 namespace Parallel.GPU
 {
     [Serializable]
-    public sealed class SingleThreadPrefixSum : IPrefixSum
+    public sealed class SingleThreadPrefixSum : IPrefixSum, IDisposable
     {
         private readonly ComputeShader _shader;
         private readonly int _kernelIndex;
 
         public ComputeBuffer Numbers { get; }
-        public ComputeBuffer Sums { get; }
+        public ComputeBuffer PrefixSums { get; }
 
-        public SingleThreadPrefixSum(ComputeShader shader, int count)
+        public SingleThreadPrefixSum(ComputeShader shader, int count, int stride)
         {
             _shader = shader;
             _kernelIndex = shader.FindKernel("PrefixSum");
 
-            Sums = new ComputeBuffer(count, UnsafeUtility.SizeOf<int>(), ComputeBufferType.Structured);
-            Numbers = new ComputeBuffer(count, UnsafeUtility.SizeOf<int>(), ComputeBufferType.Structured);
+            PrefixSums = new ComputeBuffer(count, stride, ComputeBufferType.Structured);
+            Numbers = new ComputeBuffer(count, stride, ComputeBufferType.Structured);
 
             _shader.SetInt("Count", count);
             _shader.SetBuffer(_kernelIndex, "Numbers", Numbers);
-            _shader.SetBuffer(_kernelIndex, "Sums", Sums);
+            _shader.SetBuffer(_kernelIndex, "Sums", PrefixSums);
         }
 
         public void Dispatch()
@@ -34,7 +33,7 @@ namespace Parallel.GPU
         public void Dispose()
         {
             Numbers?.Dispose();
-            Sums?.Dispose();
+            PrefixSums?.Dispose();
         }
     }
 }

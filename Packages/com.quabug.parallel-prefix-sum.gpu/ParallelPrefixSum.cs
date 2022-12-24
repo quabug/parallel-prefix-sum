@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 namespace Parallel.GPU
 {
-    public class ParallelPrefixSum : IPrefixSum
+    public class ParallelPrefixSum : IPrefixSum, IDisposable
     {
         private readonly ComputeShader _shader;
         private readonly GroupSum _groupSum;
         public ComputeBuffer Numbers { get; }
-        public ComputeBuffer Sums { get; }
+        public ComputeBuffer PrefixSums { get; }
 
         private readonly int _prefixSumKernelIndex;
         private readonly List<ComputeBuffer> _inputNumbersBuffer = new();
@@ -19,16 +20,16 @@ namespace Parallel.GPU
         private readonly int _propertyNumbers = Shader.PropertyToID("Numbers");
         private readonly int _propertySums = Shader.PropertyToID("Sums");
 
-        public ParallelPrefixSum(ComputeShader shader, int count, GroupSum groupSum)
+        public ParallelPrefixSum(ComputeShader shader, GroupSum groupSum, int count, int stride)
         {
             _shader = shader;
             _groupSum = groupSum;
 
-            Sums = new ComputeBuffer(count, UnsafeUtility.SizeOf<int>(), ComputeBufferType.Structured);
-            Numbers = new ComputeBuffer(count, UnsafeUtility.SizeOf<int>(), ComputeBufferType.Structured);
+            PrefixSums = new ComputeBuffer(count, stride, ComputeBufferType.Structured);
+            Numbers = new ComputeBuffer(count, stride, ComputeBufferType.Structured);
             
             _inputNumbersBuffer.Add(Numbers);
-            _sumBuffers.Add(Sums);
+            _sumBuffers.Add(PrefixSums);
 
             _prefixSumKernelIndex = shader.FindKernel("PrefixSum");
             var groupSize = count;

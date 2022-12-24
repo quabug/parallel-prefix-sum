@@ -1,0 +1,22 @@
+#include "ThreadSize.compute"
+
+RWStructuredBuffer<half> Sums;
+RWStructuredBuffer<half> GroupSums;
+uint Count;
+
+#pragma kernel CollectGroupSum
+[numthreads(THREAD_SIZE,1,1)]
+void CollectGroupSum(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= Count - 1) return;
+    const uint groupSumIndex = id.x * THREAD_SIZE + THREAD_SIZE - 1;
+    GroupSums[id.x] = Sums[groupSumIndex];
+}
+
+#pragma kernel AddGroupSum
+[numthreads(THREAD_SIZE,1,1)]
+void AddGroupSum(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupID)
+{
+    if (id.x >= Count || groupId == 0) return;
+    Sums[id.x] += GroupSums[groupId-1];
+}

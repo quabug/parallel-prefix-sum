@@ -1,12 +1,11 @@
-using System;
 using UnityEngine;
 
 namespace Parallel.GPU
 {
-    public interface IPrefixSum : IDisposable
+    public interface IPrefixSum
     {
-        ComputeBuffer Numbers { get; }
-        ComputeBuffer Sums { get; }
+        public ComputeBuffer Numbers { get; }
+        public ComputeBuffer PrefixSums { get; }
         public void Dispatch();
     }
 }
