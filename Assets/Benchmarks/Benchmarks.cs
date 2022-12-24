@@ -120,19 +120,19 @@ public class Benchmarks
     [Test, TestCaseSource(nameof(_counts)), Performance]
     public void GPU(int count)
     {
-        var groupSumShader = AssetDatabase.LoadAssetAtPath<ComputeShader>("Packages/com.quabug.parallel-prefix-sum.gpu/GroupSum.compute");
+        var groupSumShader = AssetDatabase.LoadAssetAtPath<ComputeShader>("Packages/com.quabug.parallel-prefix-sum.gpu/GroupSum_int.compute");
         var groupSum = new GroupSum(groupSumShader);
 
         var sums = new int[count];
         var numbers = Enumerable.Repeat(1, count).ToArray();
         if (count < 10_000_000)
         {
-            var shader = AssetDatabase.LoadAssetAtPath<ComputeShader>("Packages/com.quabug.parallel-prefix-sum.gpu/SingleThreadPrefixSum.compute");
-            var prefixSum = new SingleThreadPrefixSum(shader, count);
+            var shader = AssetDatabase.LoadAssetAtPath<ComputeShader>("Packages/com.quabug.parallel-prefix-sum.gpu/SingleThreadPrefixSum_int.compute");
+            var prefixSum = new SingleThreadPrefixSum(shader, count, 4);
             Measure.Method(() =>
                 {
                     prefixSum.Dispatch();
-                    prefixSum.Sums.GetData(sums);
+                    prefixSum.PrefixSums.GetData(sums);
                 })
                 .SampleGroup("single-threaded")
                 .SetUp(() =>
@@ -144,12 +144,12 @@ public class Benchmarks
         }
 
         {
-            var shader = AssetDatabase.LoadAssetAtPath<ComputeShader>("Packages/com.quabug.parallel-prefix-sum.gpu/ParallelPrefixSum.compute");
-            var parallelPrefixSum = new ParallelPrefixSum(shader, count, groupSum);
+            var shader = AssetDatabase.LoadAssetAtPath<ComputeShader>("Packages/com.quabug.parallel-prefix-sum.gpu/ParallelPrefixSum_int.compute");
+            var parallelPrefixSum = new ParallelPrefixSum(shader, groupSum, count, 4);
             Measure.Method(() =>
                 {
                     parallelPrefixSum.Dispatch();
-                    parallelPrefixSum.Sums.GetData(sums);
+                    parallelPrefixSum.PrefixSums.GetData(sums);
                 })
                 .SampleGroup("parallel")
                 .SetUp(() =>
@@ -161,12 +161,12 @@ public class Benchmarks
         }
 
         {
-            var shader = AssetDatabase.LoadAssetAtPath<ComputeShader>("Packages/com.quabug.parallel-prefix-sum.gpu/WorkEfficientParallelPrefixSum.compute");
-            var parallelPrefixSum = new ParallelPrefixSum(shader, count, groupSum);
+            var shader = AssetDatabase.LoadAssetAtPath<ComputeShader>("Packages/com.quabug.parallel-prefix-sum.gpu/WorkEfficientParallelPrefixSum_int.compute");
+            var parallelPrefixSum = new ParallelPrefixSum(shader, groupSum, count, 4);
             Measure.Method(() =>
                 {
                     parallelPrefixSum.Dispatch();
-                    parallelPrefixSum.Sums.GetData(sums);
+                    parallelPrefixSum.PrefixSums.GetData(sums);
                 })
                 .SampleGroup("work-efficient-parallel")
                 .SetUp(() =>

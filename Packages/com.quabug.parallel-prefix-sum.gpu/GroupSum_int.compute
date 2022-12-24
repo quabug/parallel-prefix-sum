@@ -1,4 +1,6 @@
-﻿#include "ThreadSize.compute"
+
+
+#include "ThreadSize.compute"
 
 RWStructuredBuffer<int> Sums;
 RWStructuredBuffer<int> GroupSums;
