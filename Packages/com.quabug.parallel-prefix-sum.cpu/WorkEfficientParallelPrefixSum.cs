@@ -52,12 +52,12 @@ namespace Parallel.CPU
 
         public JobHandle CalculatePrefixSum(NativeArray<TValue> inputValues, NativeArray<TValue> outputPrefixSum, JobHandle dependsOn = default)
         {
-            dependsOn = new CopyJob<TValue> { Source = inputValues, Destination = outputPrefixSum }.Schedule(inputValues.Length, BatchCount, dependsOn);
+            dependsOn = new ParallelCopyJob<TValue> { Source = inputValues, Destination = outputPrefixSum }.Schedule(inputValues.Length, BatchCount, dependsOn);
             var maxOffset = 0;
             (dependsOn, maxOffset) = UpSweep(outputPrefixSum, dependsOn);
             dependsOn = new SetLastZeroJob { Values = outputPrefixSum }.Schedule(dependsOn);
             dependsOn = DownSweep(outputPrefixSum, maxOffset, dependsOn);
-            return new AddJob<TNumber, TValue> { AddValues = inputValues, Values = outputPrefixSum }.Schedule(inputValues.Length, BatchCount, dependsOn);
+            return new ParallelAddJob<TNumber, TValue> { AddValues = inputValues, Values = outputPrefixSum }.Schedule(inputValues.Length, BatchCount, dependsOn);
         }
 
         internal (JobHandle handle, int maxOffset) UpSweep(NativeArray<TValue> values, JobHandle dependsOn)
