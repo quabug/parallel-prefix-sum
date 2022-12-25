@@ -1,4 +1,4 @@
-#include "ThreadSize.compute"
+#define THREAD_SIZE 256
 
 RWStructuredBuffer<float> Sums;
 RWStructuredBuffer<float> GroupSums;
