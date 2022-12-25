@@ -1,6 +1,6 @@
 
 
-#include "ThreadSize.compute"
+#define THREAD_SIZE 256
 
 StructuredBuffer<int> Numbers;
 RWStructuredBuffer<int> Sums;

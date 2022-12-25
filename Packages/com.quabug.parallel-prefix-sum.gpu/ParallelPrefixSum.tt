@@ -1,10 +1,10 @@
 <#@ include file="SaveComputeShader.ttinclude" #>
 
 <#
-foreach (var type in new [] { "int", "float", "half" } )
-{
+    foreach (var type in new [] { "int", "float", "half" } )
+    {
 #>
-#include "ThreadSize.compute"
+#define THREAD_SIZE 256
 
 StructuredBuffer<<#= type #>> Numbers;
 RWStructuredBuffer<<#= type #>> Sums;
@@ -43,6 +43,6 @@ void PrefixSum(uint3 dispatchThreadId : SV_DispatchThreadID, uint3 groupThreadId
     if (id < Count) Sums[id] = _buffer[outBegin + localId];
 }
 <#
-    SaveComputeShader(type);
-}
+        SaveComputeShader(type);
+    }
 #>

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: PrefixSum-half
   m_EditorClassIdentifier: 
   _count: 512
-  _stride: 4
+  _stride: 2
   _groupSumShader: {fileID: 7200000, guid: 8836ca67e363049829ee4eaf5e357b5c, type: 3}
   _prefixSumShader: {fileID: 7200000, guid: db2bdda9468964e829afe8890a03f76a, type: 3}

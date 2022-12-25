@@ -4,7 +4,7 @@
     foreach (var type in new [] { "int", "float", "half" } )
     {
 #>
-#include "ThreadSize.compute"
+#define THREAD_SIZE 256
 
 StructuredBuffer<<#= type #>> Numbers;
 RWStructuredBuffer<<#= type #>> Sums;
