@@ -4,11 +4,11 @@ using Unity.Jobs;
 
 namespace Parallel.CPU
 {
-    public class WorkEfficientParallelPrefixSum<TNumber, TValue> : IPrefixSum<TValue>
+    public struct WorkEfficientParallelPrefixSum<TNumber, TValue> : IPrefixSum<TValue>
         where TNumber : unmanaged, INumber<TValue>
         where TValue : unmanaged
     {
-        public int BatchCount { get; set; } = 32;
+        public int BatchCount { get; set; }
 
         [BurstCompile]
         internal struct UpSweepScanJob : IJobParallelFor
