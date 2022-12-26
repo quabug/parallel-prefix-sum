@@ -1,4 +1,5 @@
 using System;
+using Unity.Collections;
 using UnityEngine;
 
 namespace Parallel.GPU
@@ -23,6 +24,11 @@ namespace Parallel.GPU
             _shader.SetInt("Count", count);
             _shader.SetBuffer(_kernelIndex, "Numbers", Numbers);
             _shader.SetBuffer(_kernelIndex, "Sums", PrefixSums);
+
+            // initialize buffers
+            using var zeros = new NativeArray<byte>(count * stride, Allocator.Temp);
+            PrefixSums.SetData(zeros);
+            Numbers.SetData(zeros);
         }
 
         public void Dispatch()
