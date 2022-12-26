@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
@@ -40,6 +41,11 @@ namespace Parallel.GPU
                 _inputNumbersBuffer.Add(new ComputeBuffer(groupSize, UnsafeUtility.SizeOf<int>(), ComputeBufferType.Structured));
                 _sumBuffers.Add(new ComputeBuffer(groupSize, UnsafeUtility.SizeOf<int>(), ComputeBufferType.Structured));
             }
+
+            // initialize buffers
+            using var zeros = new NativeArray<byte>(count * stride, Allocator.Temp);
+            PrefixSums.SetData(zeros);
+            Numbers.SetData(zeros);
         }
 
         public void Dispatch()
