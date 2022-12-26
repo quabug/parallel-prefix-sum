@@ -18,7 +18,7 @@ public class CPU : MonoBehaviour
     {
         using var numbers = new NativeArray<int>(_numbers, Allocator.TempJob);
         using var prefixSums = new NativeArray<int>(_prefixSums, Allocator.TempJob);
-        new WorkEfficientParallelPrefixSum<IntNumber, int>().CalculatePrefixSum(numbers, prefixSums).Complete();
+        numbers.WorkEfficientParallelCalculatePrefixSum<IntNumber, int>(prefixSums).Complete();
         _prefixSums = prefixSums.ToArray();
     }
     

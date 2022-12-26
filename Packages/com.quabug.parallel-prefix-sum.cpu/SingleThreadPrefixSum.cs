@@ -4,7 +4,7 @@ using Unity.Jobs;
 
 namespace Parallel.CPU
 {
-    public class SingleThreadPrefixSum<TNumber, TValue> : IPrefixSum<TValue>
+    public struct SingleThreadPrefixSum<TNumber, TValue> : IPrefixSum<TValue>
         where TNumber : unmanaged, INumber<TValue>
          where TValue : unmanaged
     {
