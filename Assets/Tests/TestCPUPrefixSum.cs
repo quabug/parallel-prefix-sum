@@ -26,7 +26,7 @@ public class TestCPUPrefixSum
         using var nativeSums = new NativeArray<int>(numbers.Length, Allocator.TempJob);
         var prefixSum = new SingleThreadPrefixSum<IntNumber, int>();
         prefixSum.CalculatePrefixSum(nativeNumbers, nativeSums).Complete();
-        Assert.That(sums, Is.EquivalentTo(nativeSums.ToArray()));
+        Assert.That(sums, Is.EqualTo(nativeSums.ToArray()));
     }
     
     private static int[][] _cases =
@@ -54,7 +54,7 @@ public class TestCPUPrefixSum
         using var nativeNumbers = new NativeArray<int>(numbers, Allocator.TempJob);
         using var nativeSums = new NativeArray<int>(numbers.Length, Allocator.TempJob);
         prefixSum.CalculatePrefixSum(nativeNumbers, nativeSums).Complete();
-        Assert.That(sums, Is.EquivalentTo(nativeSums.ToArray()));
+        Assert.That(sums, Is.EqualTo(nativeSums.ToArray()));
     }
     
     [Test]
@@ -65,7 +65,7 @@ public class TestCPUPrefixSum
         using var nativeNumbers = new NativeArray<int>(numbers, Allocator.TempJob);
         using var nativeSums = new NativeArray<int>(numbers.Length, Allocator.TempJob);
         prefixSum.CalculatePrefixSum(nativeNumbers, nativeSums).Complete();
-        Assert.That(sums, Is.EquivalentTo(nativeSums.ToArray()));
+        Assert.That(sums, Is.EqualTo(nativeSums.ToArray()));
     }
     
     [Test, TestCaseSource(nameof(_cases))]
@@ -78,7 +78,7 @@ public class TestCPUPrefixSum
         using var nativeNumbers = new NativeArray<int>(numbers, Allocator.TempJob);
         using var nativeSums = new NativeArray<int>(numbers.Length, Allocator.TempJob);
         prefixSum.CalculatePrefixSum(nativeNumbers, nativeSums).Complete();
-        Assert.That(sums, Is.EquivalentTo(nativeSums.ToArray()));
+        Assert.That(sums, Is.EqualTo(nativeSums.ToArray()));
     }
     
     [Test]
@@ -89,6 +89,6 @@ public class TestCPUPrefixSum
         using var nativeNumbers = new NativeArray<int>(numbers, Allocator.TempJob);
         using var nativeSums = new NativeArray<int>(numbers.Length, Allocator.TempJob);
         prefixSum.CalculatePrefixSum(nativeNumbers, nativeSums).Complete();
-        Assert.That(sums, Is.EquivalentTo(nativeSums.ToArray()));
+        Assert.That(sums, Is.EqualTo(nativeSums.ToArray()));
     }
 }

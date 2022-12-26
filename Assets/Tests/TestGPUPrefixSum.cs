@@ -26,7 +26,7 @@ public class TestGPUPrefixSum
         prefixSum.Dispatch();
         var gpuSums = new int[sums.Length];
         prefixSum.PrefixSums.GetData(gpuSums);
-        Assert.That(sums, Is.EquivalentTo(gpuSums));
+        Assert.That(sums, Is.EqualTo(gpuSums));
     }
 
     private static int[][] _cases =
@@ -53,7 +53,7 @@ public class TestGPUPrefixSum
         prefixSum.Dispatch();
         var gpuSums = new int[sums.Length];
         prefixSum.PrefixSums.GetData(gpuSums);
-        Assert.That(sums, Is.EquivalentTo(gpuSums));
+        Assert.That(sums, Is.EqualTo(gpuSums));
     }
 
     [Test]
@@ -78,7 +78,7 @@ public class TestGPUPrefixSum
         prefixSum.Dispatch();
         var gpuSums = new int[sums.Length];
         prefixSum.PrefixSums.GetData(gpuSums);
-        Assert.That(sums, Is.EquivalentTo(gpuSums));
+        Assert.That(sums, Is.EqualTo(gpuSums));
     }
 
     [Test, TestCaseSource(nameof(_cases))]
@@ -93,7 +93,7 @@ public class TestGPUPrefixSum
         prefixSum.Dispatch();
         var gpuSums = new int[sums.Length];
         prefixSum.PrefixSums.GetData(gpuSums);
-        Assert.That(sums, Is.EquivalentTo(gpuSums));
+        Assert.That(sums, Is.EqualTo(gpuSums));
     }
 
     [Test]
@@ -106,7 +106,7 @@ public class TestGPUPrefixSum
         prefixSum.Dispatch();
         var gpuSums = new int[sums.Length];
         prefixSum.PrefixSums.GetData(gpuSums);
-        Assert.That(sums, Is.EquivalentTo(gpuSums));
+        Assert.That(sums, Is.EqualTo(gpuSums));
     }
 
     [Test]
@@ -120,7 +120,7 @@ public class TestGPUPrefixSum
         var gpuSums = new float[sums.Length];
         prefix.PrefixSums.GetData(gpuSums);
         GlobalSettings.DefaultFloatingPointTolerance = 0.005f;
-        Assert.That(sums, Is.EquivalentTo(gpuSums));
+        Assert.That(sums, Is.EqualTo(gpuSums));
     }
 
     [Test]
@@ -133,6 +133,6 @@ public class TestGPUPrefixSum
         prefix.Dispatch();
         var gpuSums = new int[sums.Length];
         prefix.PrefixSums.GetData(gpuSums);
-        Assert.That(sums, Is.EquivalentTo(gpuSums));
+        Assert.That(sums, Is.EqualTo(gpuSums));
     }
 }
